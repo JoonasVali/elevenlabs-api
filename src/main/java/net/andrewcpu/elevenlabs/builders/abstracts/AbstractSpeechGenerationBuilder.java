@@ -19,6 +19,7 @@ public abstract class AbstractSpeechGenerationBuilder<T, F> {
 
 	public abstract F build();
 
+	public abstract String getReceivedLastRequestId();
 
 	public GeneratedAudioOutputFormat getGeneratedAudioOutputFormat() {
 		return generatedAudioOutputFormat;

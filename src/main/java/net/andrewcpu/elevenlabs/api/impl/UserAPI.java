@@ -10,10 +10,10 @@ public class UserAPI extends ElevenLabsAPI {
 
 
 	public User getUser() {
-		return sendRequest(new GetUserRequest());
+		return sendRequest(new GetUserRequest()).getResult();
 	}
 
 	public Subscription getSubscription() {
-		return sendRequest(new GetSubscriptionRequest());
+		return sendRequest(new GetSubscriptionRequest()).getResult();
 	}
 }

@@ -7,6 +7,6 @@ import net.andrewcpu.elevenlabs.requests.models.GetModelsRequest;
 public class ModelsAPI extends ElevenLabsAPI {
 
 	public GenerationTypeModel[] getAvailableModels() {
-		return sendRequest(new GetModelsRequest());
+		return sendRequest(new GetModelsRequest()).getResult();
 	}
 }

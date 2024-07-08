@@ -29,4 +29,9 @@ public class SpeechToSpeechStreamedBuilder extends AbstractSpeechGenerationBuild
 				.getSpeechToSpeechAPI()
 				.generateSpeechToSpeechStream(getVoiceId(), getVoiceSettings(),getModelId(),getInputFile(),getLatencyOptimization());
 	}
+
+	@Override
+	public String getReceivedLastRequestId() {
+		return null;
+	}
 }

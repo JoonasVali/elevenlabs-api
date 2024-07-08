@@ -16,11 +16,11 @@ public class SpeechToSpeechAPI extends ElevenLabsAPI {
 	}
 
 	public File generateSpeechToSpeech(String voiceId, VoiceSettings voiceSettings, String modelId, File audio, StreamLatencyOptimization latencyOptimization) {
-		return sendRequest(new PostSpeechToSpeechRequest(voiceId, voiceSettings,audio, modelId, latencyOptimization));
+		return sendRequest(new PostSpeechToSpeechRequest(voiceId, voiceSettings,audio, modelId, latencyOptimization)).getResult();
 	}
 
 	public InputStream generateSpeechToSpeechStream(String voiceId, VoiceSettings voiceSettings, String modelId, File audio, StreamLatencyOptimization streamLatencyOptimization) {
-		return sendRequest(new PostSpeechToSpeechStreamedRequest(voiceId, voiceSettings, audio, modelId, streamLatencyOptimization));
+		return sendRequest(new PostSpeechToSpeechStreamedRequest(voiceId, voiceSettings, audio, modelId, streamLatencyOptimization)).getResult();
 	}
 
 	public InputStream generateSpeechToSpeechStream(String voiceId, VoiceSettings voiceSettings, String modelId, File audio) {
@@ -34,11 +34,11 @@ public class SpeechToSpeechAPI extends ElevenLabsAPI {
 	}
 
 	public File generateSpeechToSpeech(String voiceId, VoiceSettings voiceSettings, ElevenLabsVoiceModel model, File audio, StreamLatencyOptimization latencyOptimization) {
-		return sendRequest(new PostSpeechToSpeechRequest(voiceId, voiceSettings,audio, model.getModelId(), latencyOptimization));
+		return sendRequest(new PostSpeechToSpeechRequest(voiceId, voiceSettings,audio, model.getModelId(), latencyOptimization)).getResult();
 	}
 
 	public InputStream generateSpeechToSpeechStream(String voiceId, VoiceSettings voiceSettings, ElevenLabsVoiceModel model, File audio, StreamLatencyOptimization streamLatencyOptimization) {
-		return sendRequest(new PostSpeechToSpeechStreamedRequest(voiceId, voiceSettings, audio, model.getModelId(), streamLatencyOptimization));
+		return sendRequest(new PostSpeechToSpeechStreamedRequest(voiceId, voiceSettings, audio, model.getModelId(), streamLatencyOptimization)).getResult();
 	}
 
 	public InputStream generateSpeechToSpeechStream(String voiceId, VoiceSettings voiceSettings, ElevenLabsVoiceModel model, File audio) {

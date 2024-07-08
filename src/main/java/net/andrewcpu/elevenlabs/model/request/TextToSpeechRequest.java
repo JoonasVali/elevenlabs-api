@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.andrewcpu.elevenlabs.model.ElevenModel;
 import net.andrewcpu.elevenlabs.model.voice.VoiceSettings;
 
+import java.util.Arrays;
+
 public class TextToSpeechRequest extends ElevenModel {
 	@JsonProperty("text")
 	private String text;
@@ -15,10 +17,26 @@ public class TextToSpeechRequest extends ElevenModel {
 	@JsonProperty("voice_settings")
 	private VoiceSettings voiceSettings;
 
+	@JsonProperty("previous_request_ids")
+	private String[] previousRequestIds;
+
+	@JsonProperty("previous_text")
+	private String previousText;
+
 	public TextToSpeechRequest(String text, String modelId, VoiceSettings voiceSettings) {
+		this(text, modelId, voiceSettings, null, null);
+	}
+
+	public TextToSpeechRequest(String text, String modelId, VoiceSettings voiceSettings, String previousText, String[] previousRequestIds) {
 		this.text = text;
 		this.modelId = modelId;
 		this.voiceSettings = voiceSettings;
+		this.previousText = previousText;
+		this.previousRequestIds = previousRequestIds;
+	}
+
+	public TextToSpeechRequest(String text, String modelId, VoiceSettings voiceSettings, String[] previousRequestIds) {
+		this(text, modelId, voiceSettings, null, previousRequestIds);
 	}
 
 	public TextToSpeechRequest() {
@@ -46,6 +64,8 @@ public class TextToSpeechRequest extends ElevenModel {
 				"text='" + text + '\'' +
 				", modelId='" + modelId + '\'' +
 				", voiceSettings=" + voiceSettings +
+				", previousText" + previousText +
+				", previousRequestIds" + Arrays.toString(previousRequestIds) +
 				'}';
 	}
 }

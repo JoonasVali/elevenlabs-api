@@ -6,33 +6,42 @@ import net.andrewcpu.elevenlabs.ElevenLabs;
 import net.andrewcpu.elevenlabs.enums.HttpRequestType;
 import net.andrewcpu.elevenlabs.exceptions.ValidationException;
 import net.andrewcpu.elevenlabs.model.error.ValidationError;
-import org.apache.hc.client5.http.classic.methods.*;
+import net.andrewcpu.elevenlabs.requests.tts.PostTextToSpeechRequest;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPut;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.entity.mime.FileBody;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpRequest;
-import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
 public class ElevenNetworkUtil {
 	private static final String BASE_URL = "https://api.elevenlabs.io/";
-	private static final List<String> FILE_RESULT_TYPES = List.of("application/octet-stream", "audio/mpeg", "application/zip");
+	private static final List<String> FILE_RESULT_TYPES = List.of(
+			"application/octet-stream", "audio/mpeg", "application/zip", "audio/pcm"
+	);
 
 
 	private static void applyHeader(HttpRequest request) {
@@ -141,7 +150,7 @@ public class ElevenNetworkUtil {
 		return BASE_URL + "v1/history/" + historyItemId + "/audio";
 	}
 
-	public static <T> T sendRequest(HttpRequestType method, String path, Object payload, Class<T> responseType) {
+	public static <T> RequestResult<T> sendRequest(HttpRequestType method, String path, Object payload, Class<T> responseType) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		path = BASE_URL + path;
 		try {
@@ -154,7 +163,8 @@ public class ElevenNetworkUtil {
 		}
 	}
 
-	private static <T> T getRequestResult(Class<T> responseType, ObjectMapper objectMapper, CloseableHttpClient httpclient, HttpUriRequestBase request) throws ValidationException {
+
+	private static <T> RequestResult<T> getRequestResult(Class<T> responseType, ObjectMapper objectMapper, CloseableHttpClient httpclient, HttpUriRequestBase request) throws ValidationException {
 		CloseableHttpResponse response;
 		try {
 			response = httpclient.execute(request);
@@ -166,17 +176,21 @@ public class ElevenNetworkUtil {
 				throw new ValidationException(error);
 			}
 
+			Header requestId = response.getHeader("request-id");
+			if (responseType == PostTextToSpeechRequest.class) {
+
+			}
 			if (response.getEntity().getContentType().contains("application/json")) {
 				String responseString = EntityUtils.toString(response.getEntity());
 				response.close();
 				httpclient.close();
 				if (responseType == String.class) {
-					return (T) responseString;
+					return new RequestResult<>((T) responseString, requestId.getValue());
 				}
-				return objectMapper.readValue(responseString, responseType);
+				return new RequestResult<>(objectMapper.readValue(responseString, responseType), requestId.getValue());
 			} else if (FILE_RESULT_TYPES.stream().anyMatch(response.getEntity().getContentType()::contains)) {
 				if (responseType.isAssignableFrom(InputStream.class)) {
-					return (T) response.getEntity().getContent();
+					return new RequestResult<>((T) response.getEntity().getContent(), requestId.getValue());
 				} else if (responseType.isAssignableFrom(File.class)) {
 					File tempFile = File.createTempFile("download", "tmp");
 					try (InputStream in = response.getEntity().getContent();
@@ -189,7 +203,7 @@ public class ElevenNetworkUtil {
 					}
 					response.close();
 					httpclient.close();
-					return (T) tempFile;
+					return new RequestResult<> ((T) tempFile, requestId.getValue());
 				} else {
 					response.close();
 					httpclient.close();

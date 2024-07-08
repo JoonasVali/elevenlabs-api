@@ -7,6 +7,6 @@ import net.andrewcpu.elevenlabs.requests.audionative.PostCreateAudioNativeProjec
 
 public class AudioNativeAPI extends ElevenLabsAPI {
 	public CreateAudioEnabledProjectModelResponse createAudioEnabledProject(CreateAudioNativeProjectRequest request) {
-		return sendRequest(new PostCreateAudioNativeProjectRequest(request));
+		return sendRequest(new PostCreateAudioNativeProjectRequest(request)).getResult();
 	}
 }

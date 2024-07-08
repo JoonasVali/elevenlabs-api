@@ -15,41 +15,41 @@ import java.util.Map;
 public class VoiceAPI extends ElevenLabsAPI {
 
 	public List<Voice> getVoices() {
-		return sendRequest(new GetVoicesRequest()).getVoices();
+		return sendRequest(new GetVoicesRequest()).getResult().getVoices();
 	}
 
 	public VoiceSettings getDefaultVoiceSettings() {
-		return sendRequest(new GetDefaultVoiceSettingsRequest());
+		return sendRequest(new GetDefaultVoiceSettingsRequest()).getResult();
 	}
 
 	public VoiceSettings getVoiceSettings(String voiceId) {
-		return sendRequest(new GetVoiceSettingsRequest(voiceId));
+		return sendRequest(new GetVoiceSettingsRequest(voiceId)).getResult();
 	}
 
 	public Voice getVoice(String voiceId) {
-		return sendRequest(new GetVoiceRequest(voiceId));
+		return sendRequest(new GetVoiceRequest(voiceId)).getResult();
 	}
 
 	public Voice getVoice(String voiceId, boolean withSettings) {
-		return sendRequest(new GetVoiceRequest(voiceId, withSettings));
+		return sendRequest(new GetVoiceRequest(voiceId, withSettings)).getResult();
 	}
 
 	public ProjectsModelResponse getProjects() {
-		return sendRequest(new GetProjectsRequest());
+		return sendRequest(new GetProjectsRequest()).getResult();
 	}
 
 	public String deleteVoice(String voiceId) {
-		return sendRequest(new DeleteVoiceRequest(voiceId));
+		return sendRequest(new DeleteVoiceRequest(voiceId)).getResult();
 	}
 
 	public String editVoiceSettings(String voiceId, VoiceSettings settings) {
-		return sendRequest(new PostEditVoiceSettingsRequest(voiceId, settings));
+		return sendRequest(new PostEditVoiceSettingsRequest(voiceId, settings)).getResult();
 	}
 
 	public CreateVoiceResponse createVoice(String name, File[] files, String description, Map<String, String> labels) {
-		return sendRequest(new PostAddVoiceRequest(name, files, description, labels));
+		return sendRequest(new PostAddVoiceRequest(name, files, description, labels)).getResult();
 	}
 	public String editVoice(String voiceId, String name, File[] files, String description, Map<String, String> labels) {
-		return sendRequest(new PostEditVoiceRequest(voiceId, name, files, description, labels));
+		return sendRequest(new PostEditVoiceRequest(voiceId, name, files, description, labels)).getResult();
 	}
 }

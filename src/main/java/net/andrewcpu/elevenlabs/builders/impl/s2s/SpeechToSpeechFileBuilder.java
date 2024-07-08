@@ -29,4 +29,9 @@ public class SpeechToSpeechFileBuilder extends AbstractSpeechGenerationBuilder<S
 				.generateSpeechToSpeech(getVoiceId(), getVoiceSettings(),getModelId(),getInputFile(),getLatencyOptimization());
 	}
 
+	@Override
+	public String getReceivedLastRequestId() {
+		return null;
+	}
+
 }
